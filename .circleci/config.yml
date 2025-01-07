@@ -12,8 +12,8 @@ jobs:
       - node/install-packages:
         pkg-manager: npm
       - run: |
-        echo "Install dependencies"
-        npm install
+          echo "Install dependencies"
+          npm install
 
 workflows:
   simple_workflow:
