@@ -16,3 +16,5 @@ eg. npm install
 Why we separate our build and test set-ups in config.yml
 - so that we know where the code fail, is it in build or in the test stage?
 
+Where are the containers created?
+- on CircleCi servers
