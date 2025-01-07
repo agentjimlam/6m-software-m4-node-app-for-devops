@@ -18,3 +18,13 @@ Why we separate our build and test set-ups in config.yml
 
 Where are the containers created?
 - on CircleCi servers
+
+npm i -D jest-environment-jsdom
+
+
+config.yml is a declarative file
+
+React or java is imperative
+
+assignment 
+- to add a new job inside the config, "publish"
