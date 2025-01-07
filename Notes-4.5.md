@@ -11,3 +11,8 @@ eg. npm install
 2. Run test
 
 3. Upon passing the tests, publish container image to registry and proceed to the CD pipeline
+
+
+Why we separate our build and test set-ups in config.yml
+- so that we know where the code fail, is it in build or in the test stage?
+
