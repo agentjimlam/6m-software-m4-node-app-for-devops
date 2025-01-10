@@ -32,7 +32,9 @@ jobs:
     steps:
       - setup_remote_docker
       - checkout
-      - docker/check
+      - docker/check:
+          docker-username: DOCKER_USERNAME
+          docker-password: DOCKER_PASSWORD
       - docker/build:
           image: jlam733/education-space
       - docker/push:
