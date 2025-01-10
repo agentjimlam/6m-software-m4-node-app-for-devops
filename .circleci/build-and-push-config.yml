@@ -1,0 +1,70 @@
+version: 2.1
+
+orbs:
+  node: circleci/node@5.0.1
+  heroku: circleci/heroku@2.0.0
+  docker: circleci/docker@2.1.4
+
+jobs:
+  build:
+    docker:
+      - image: cimg/node:16.10
+    steps:
+      - checkout
+      - node/install-packages:
+          pkg-manager: npm
+      - run: |
+          echo "Install dependencies"
+          npm install
+  test:
+    docker:
+      - image: cimg/node:16.10
+    steps:
+      - checkout
+      - node/install-packages:
+          pkg-manager: npm
+      - run: |
+          echo "Running tests"
+          npm run test
+
+  build-and-push:
+    executor: docker/docker
+    steps:
+      - setup_remote_docker
+      - checkout
+      - docker/check:
+          docker-username: DOCKER_USERNAME
+          docker-password: DOCKER_PASSWORD
+      - docker/build:
+          image: jlam733/education-space
+      - docker/push:
+          image: jlam733/education-space
+
+  deploy:
+    docker:
+      - image: cimg/node:16.10
+    steps:
+      - setup_remote_docker
+      - heroku/install
+      - checkout
+      - run:
+          name: Heroku Container Push
+          command: |
+            heroku container:login
+            heroku stack:set container -a jimmylam-su-devops
+            heroku container:push web -a jimmylam-su-devops
+            heroku container:release web -a jimmylam-su-devops
+
+workflows:
+  simple_workflow:
+    jobs:
+      - build
+      - test:
+          requires:
+            - build
+      - build-and-push:
+          requires:
+            - test
+      - deploy:
+            requires:
+              - build-and-push
