@@ -4,7 +4,6 @@ orbs:
   node: circleci/node@5.0.1
   heroku: circleci/heroku@2.0.0
   docker: circleci/docker@2.1.4
-  snyk: snyk/snyk@1.5.0
 
 jobs:
   build:
@@ -57,39 +56,34 @@ jobs:
             heroku stack:set container -a jimmylam-su-devops
             heroku container:push web -a jimmylam-su-devops
             heroku container:release web -a jimmylam-su-devops
-  scan:
-    docker:
-      - image: cimg/node:16.10
-    environment:
-      IMAGE_NAME: jlam733/education-space
-    steps:
-      - checkout
-      - setup_remote_docker
-      - docker/check
-      - run: docker build -t $IMAGE_NAME .
-      - snyk/scan: 
-          docker-image-name: $IMAGE_NAME
 
 workflows:
   simple_workflow:
     jobs:
-      - build
-      - scan:
-          requires:
-            - build
+      - build:
+          filters:
+            branches:
+              only: main
       - test:
           requires:
-            - scan
-      # - build-and-push:
-      #     filters:
-      #       tags:
-      #         only: /^v.*/
-      # - deploy:
-      #       requires:
-      #         - build-and-push
-      #       filters:
-      #         tags:
-      #           only: /^v.*/
+            - build
+          filters:
+            branches:
+              only: main
+      - build-and-push:
+          filters:
+            tags:
+              only: /^v.*/
+            # branches:
+            #   ignore: /.*/
+      - deploy:
+            requires:
+              - build-and-push
+            filters:
+              tags:
+                only: /^v.*/
+              # branches:
+              #   ignore: /.*/
 
 # The tags: only: /^v.*/ filter ensures this job only runs when a Git tag starting with v is pushed (e.g., v1.0.0).
 # The branches: ignore: /.*/ filter means that this job is ignored for all branch events, including pushes and merges to main.
