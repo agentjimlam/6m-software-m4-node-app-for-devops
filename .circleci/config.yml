@@ -117,3 +117,10 @@ workflows:
 # by right we shouldn't do that branch ignore
 
 # the idea is we only build and push when we have a version that is ready to release
+
+# Regular Expression (/^v.*/):
+# ^ indicates the start of the string.
+# v specifies that the tag must begin with the letter v.
+# . (dot) matches any single character.
+# * (asterisk) means "zero or more of the preceding character" (in this case, "zero or more characters following the v").
+# Combined Meaning: The regular expression ^v.* matches any Git tag that starts with v followed by any characters (e.g., v1, v1.0.0, v2-beta).
